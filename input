@@ -1,0 +1,84 @@
+// input field create in html
+
+<div class="mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div style="font-size: 16px;">
+            {{Lable}} <span *ngIf="Required" style="font-size: 18px; color: red;">*</span>
+        </div>
+        <span *ngIf="Maxlength > 0;" style="color:#868e96; margin-right: 10px;" >{{Length}}/ <span [ngStyle]="Length >= Minlength?{color:'red',right:'10px'}:{right:'10px',color:'#868e96'}">{{Minlength}}</span> </span>  
+    </div>
+   <div>
+    <div class="w-100 mt-1 position-relative d-flex align-items-center">
+        <input [ngClass]="Disable?'input_disable':'input'" class="w-100 input title_input theme_border" style="padding-right: 10px;" [value]="FormControl.value" (keyup)="Returnvalue($event.target.value)" [disabled]="Disable"  [maxLength]="Maxlength > 0?Maxlength:1234567890" type="text" [placeholder]="Placeholder"> 
+
+    </div>
+    <span *ngIf="Required && Touched"  style="color: red;">{{ErrMessage}}</span>
+   </div>
+  
+</div>
+
+
+// input field create in css--------------
+
+.title_input:focus{
+    border: 2px solid rgba(58,168,242,1);
+    -webkit-box-shadow: 0px 0px 11px -1px rgba(58,168,242,1);
+-moz-box-shadow: 0px 0px 11px -1px rgba(58,168,242,1);
+box-shadow: 0px 0px 11px -3px rgba(58,168,242,1);
+}
+.input{
+    height: 40px; border: 1px solid #b1b1b1; border-radius: 5px; outline: unset; font-size: 16px; padding-left: 10px;
+    
+}
+.input_disable{
+    height: 40px; border: 1px solid #b1b1b1; border-radius: 5px; outline: unset; font-size: 16px; padding-left: 10px; background-color: #f2f2f2;
+    
+}
+
+// input field create in ts --------------
+
+export class InputComponent implements OnInit,OnChanges{
+@Input() FormControl = new FormControl('')
+@Input() Lable:any = "title" 
+@Input() ErrMessage:any = "this field is required"
+@Input() Name:any = "name"
+@Input() Value:any;
+@Input() Placeholder:any = 'Text'
+@Input() Maxlength:any = 120
+@Input() Minlength:any = 60
+@Input() Required:boolean = false
+@Input() Disable:boolean = false
+Touched:boolean = false
+Dirty:boolean = false
+
+
+
+@Output() OutputValue = new EventEmitter<any>()
+Length:number = 0;
+
+  constructor() { }
+  ngOnChanges(changes: SimpleChanges): void {
+
+    if(changes['Value']){
+        this.FormControl.setValue(this.Value)
+        this.Length = this.Value.length
+    }
+  
+  }
+
+  ngOnInit(): void {
+  }
+  Returnvalue(value: any) {
+    this.Length = value.length
+    this.OutputValue.emit(value)
+    this.FormControl.setValue(value)
+  
+    if(value.length > 0){
+      this.Touched = false
+    }else{
+      this.Touched = true
+    }
+
+  }
+
+}
