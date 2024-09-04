@@ -1,0 +1,118 @@
+// popup create in html-----------------
+
+<div *ngIf="Switch" class="image_editor_container">
+    <div #pop_cotainer class="popup_container">
+        <div class="optimizer_header ">
+            <span class="optimizer_header">
+                <span style="margin-right: 40px;">{{Title}}</span>
+                <span  class="close_icon" (click)="closeImageOptimizer()" style="size: 32px;"><svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="#000000"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></span>
+            </span>
+        </div>
+       <ng-content></ng-content>
+    </div>
+</div>
+
+// popup create in css-----------------
+
+.image_editor_container{
+    height: 100%;
+    width: 100%;
+    background-color: rgba(000,000,000, 0.4);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100000000;
+    
+
+
+}
+
+.popup_container{
+    border-radius: 10px;
+    padding: 10px;
+    transform: translateY(-2000%);
+    background-color: white;
+    position: relative;
+    width: 50%;
+    max-width: 450px;
+   
+}
+.optimizer_header{
+    width: 100%;
+    font-size:22px;
+    font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+    padding:3px 5px;
+    position: sticky;
+    background-color: white;
+    top: 0px;
+    margin-bottom: 10px;
+}
+.close_icon{
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    padding: 5px;
+    background-color: #f2f2f2;
+    border-radius: 20px;
+    height: 25px;
+    width: 25px;
+    transition: 0.2s all ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .close_icon:active{
+     background-color:white;
+     transition: 0.2s all ease-in-out;
+  }
+  @media only screen and (max-width: 1024px) {
+    .popup_container{
+    margin: 10px;
+    width: 100%;
+    max-width: 450px;
+    }
+    
+}
+@media (max-width:425px) {
+  .popup_container{
+    width: 300px
+    ;
+  } 
+}
+
+// popup create in ts -------------------
+
+export class PopupComponent implements OnInit {
+
+  @ViewChild('pop_cotainer') PopupContainer!: ElementRef;
+  @Input() Switch:boolean = false
+  @Input() Title:any = "Title"
+  @Output() Close = new EventEmitter<boolean>()
+  EleContainer: any;
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes['Switch'].currentValue){
+     setTimeout(() => {
+      this.EleContainer = this.PopupContainer.nativeElement
+      this.EleContainer.style.setProperty("transform","translateY(-0%)")
+      this.EleContainer.style.setProperty("transition","0.2s all ease-in-out")
+     }, 200);
+    }
+  }
+  closeImageOptimizer(){
+    this.EleContainer.style.setProperty("transform","translateY(-2000%)")
+    this.EleContainer.style.setProperty("transition","0.2s all ease-in-out")
+      setTimeout(() => {
+        this.Close.emit(false)
+      }, 200);
+  }
+}
